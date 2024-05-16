@@ -1,5 +1,5 @@
 <template>
-    <div class="entry-container mb-3 pointer p-2">
+    <div @click="$router.push({ name: 'entry', params: { id: 1 } })" class="entry-container mb-3 pointer p-2">
         <div class="entry-title d-flex">
             <span class="text-success fs-5 fw-bold">15</span>
             <span class="mx-1 fs-5">Mayo</span>
@@ -29,7 +29,7 @@ export default {
     }
 
     .entry-description {
-        font-size: 12px;
+        font-size: 16px;
     }
 }
 </style>
