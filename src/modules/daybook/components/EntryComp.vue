@@ -35,7 +35,7 @@ export default {
         },
         year() {
             const date = new Date(this.entry.date)
-            return `${date.getFullYear()}, ${days[date.getDay()]} `
+            return `${date.getFullYear()}, ${days[date.getDay()]}`
         }
     },
 
