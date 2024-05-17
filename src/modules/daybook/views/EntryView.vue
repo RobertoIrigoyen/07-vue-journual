@@ -27,14 +27,14 @@
         <img src="https://www.robertlandscapes.com/wp-content/uploads/2014/11/landscape-322100_1280.jpg" alt="entry-picture"
             class="img-thumbnail">
 
-        <Fab icon="fa-save" />
+        <Fab @on:click="saveEntry" icon="fa-save" />
     </div>
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue'
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
 export default {
@@ -68,10 +68,16 @@ export default {
         }
     },
     methods: {
+        ...mapActions('journal', ['updateEntry']),
+
         loadEntry() {
             const entry = this.getEntryById(this.id)
             if (!entry) return this.$router.push({ name: "no-entry" })
             this.entry = entry
+        },
+        async saveEntry() {
+
+            this.updateEntry(this.entry)
         }
     },
     created() {
