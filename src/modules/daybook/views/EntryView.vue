@@ -8,7 +8,7 @@
                     <span class="mx-2 fs-4 fw-light">{{ year }}</span>
                 </div>
                 <div>
-                    <button class="btn btn-danger mx-2">
+                    <button v-if="entry.id" class="btn btn-danger mx-2" @click="onDeleteEntry">
                         Borrar
                         <i class="fa fa-trash-alt"></i>
                     </button>
@@ -68,16 +68,36 @@ export default {
         }
     },
     methods: {
-        ...mapActions('journal', ['updateEntry']),
+        ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry']),
 
         loadEntry() {
-            const entry = this.getEntryById(this.id)
-            if (!entry) return this.$router.push({ name: "no-entry" })
+            let entry;
+            if (this.id === 'new') {
+                entry = {
+                    text: '',
+                    date: new Date().getTime()
+                }
+
+            } else {
+                entry = this.getEntryById(this.id)
+                if (!entry) return this.$router.push({ name: "no-entry" })
+            }
             this.entry = entry
         },
         async saveEntry() {
+            if (this.entry.id) {
+                await this.updateEntry(this.entry)
+            } else {
+                const id = await this.createEntry(this.entry)
+                //Crear nuevo
+                this.$router.push({ name: 'entry', params: { id: id } })
+            }
 
-            this.updateEntry(this.entry)
+        },
+        async onDeleteEntry() {
+            console.log('deleteo', this.entry)
+            await this.deleteEntry(this.entry.id)
+            return this.$router.push({ name: "no-entry" })
         }
     },
     created() {
