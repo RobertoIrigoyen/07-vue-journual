@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: "/daybook",
-    ...daybookRouter
+    ...daybookRouter,
   },
 ];
 
