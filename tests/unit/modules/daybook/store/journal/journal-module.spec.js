@@ -13,6 +13,7 @@ const createVuexStore = (initialState) =>
     },
   });
 
+jest.setTimeout(12000);
 describe("Vuex - Pruebas en el Journal Module", () => {
   test("este es el estado inicial, debe de tener este state", () => {
     const store = createVuexStore(journalState);
@@ -91,9 +92,54 @@ describe("Vuex - Pruebas en el Journal Module", () => {
     ).toEqual(entry1);
   });
 
-  test("actions: loadEntries", () => {});
+  // Actions
 
-  test("actions: updateEntry", () => {});
+  test("actions: loadEntries", async () => {
+    const store = createVuexStore({ isLoading: true, entries: [] });
+    await store.dispatch("journal/loadEntries");
 
-  test("actions: createEntry deleteEntry", () => {});
+    expect(store.state.journal.entries.length).toBe(2);
+  });
+
+  test("actions: updateEntry", async () => {
+    const store = createVuexStore(journalState);
+
+    const updatedEntry = {
+      id: "-MfKM3yA5ij3hnmLFfqv",
+      date: 1627077227978,
+      text: "Hola mundo desde mock data",
+      otroCampo: true,
+      otroMas: { a: 1 },
+    };
+
+    await store.dispatch("journal/updateEntry", updatedEntry);
+
+    expect(store.state.journal.entries.length).toBe(2);
+    expect(
+      store.state.journal.entries.find((e) => e.id === updatedEntry.id)
+    ).toEqual({
+      id: "-MfKM3yA5ij3hnmLFfqv",
+      date: 1627077227978,
+      text: "Hola mundo desde mock data",
+    });
+  });
+
+  test("actions: createEntry deleteEntry", async () => {
+    const store = createVuexStore(journalState);
+
+    const newEntry = {
+      date: 1627077227978,
+      text: "Nueva entrada desde las pruebas",
+    };
+
+    const id = await store.dispatch("journal/createEntry", newEntry);
+
+    expect(typeof id).toBe("string");
+
+    expect(store.state.journal.entries.find((e) => e.id === id)).toBeTruthy();
+
+    await store.dispatch("journal/deleteEntry", id);
+
+    expect(store.state.journal.entries.find((e) => e.id === id)).toBeFalsy();
+  });
 });
