@@ -41,14 +41,37 @@ describe("Vuex - Pruebas en el Journal Module", () => {
       date: 1627077227978,
       text: "Hola mundo desde mock data",
     };
-    store.commit("journal/updateEntry", updateEntry);
+    store.commit("journal/updateEntry", { updateEntry });
 
     expect(store.state.journal.entries.length).toBe(2);
 
-    expect(store.state.journal.entries.find((e) => e.id === updateEntry.id)).toEqual(updateEntry);
+    expect(
+      store.state.journal.entries.find((e) => e.id === updateEntry.id)
+    ).toEqual(updateEntry);
   });
 
-  test("mutation: addEntry deleteEntry", () => {});
+  test("mutation: addEntry deleteEntry", () => {
+    const store = createVuexStore(journalState);
+
+    // Add Entry
+
+    store.commit("journal/addEntry", {
+      id: "ABC123",
+      text: "Hola mundo desde mock data",
+    });
+    expect(store.state.journal.entries.length).toBe(3);
+    expect(store.state.journal.entries.find((e) => e.id === "ABC123").id).toBe(
+      "ABC123"
+    );
+
+    //Delete Entry
+
+    store.commit("journal/deleteEntry", "ABC123");
+    expect(store.state.journal.entries.length).toBe(2);
+    expect(
+      store.state.journal.entries.find((e) => e.id != "ABC123")
+    ).toBeTruthy();
+  });
 
   test("getters: getEntriesByTerm getEntryById", () => {});
 
